@@ -6,5 +6,5 @@ This project is using:
 - Spring Boot 2.2.5
   - data-jpa
   - web
-  - devtools (Only for Eclipse IDE users)
+  - devtools (Only for Eclipse users)
 - H2
