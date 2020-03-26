@@ -2,9 +2,7 @@ package com.springTemplate.controller.dto;
 
 import com.springTemplate.model.Topic;
 import com.springTemplate.model.TopicStatus;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 
 public class TopicDTOOutGetAll {
 
@@ -20,8 +18,8 @@ public class TopicDTOOutGetAll {
         this.status = topic.getStatus();
     }
 
-    public static List<TopicDTOOutGetAll> getTopicDTOOut(List<Topic> topics) {
-        return topics.stream().map(TopicDTOOutGetAll::new).collect(Collectors.toList());
+    public static Page<TopicDTOOutGetAll> getTopicDTOOut(Page<Topic> topics) {
+        return topics.map(TopicDTOOutGetAll::new);
     }
 
     public Long getId() {

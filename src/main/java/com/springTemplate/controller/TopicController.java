@@ -5,6 +5,13 @@ import com.springTemplate.model.Topic;
 import com.springTemplate.repository.CourseRepository;
 import com.springTemplate.repository.TopicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -12,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -25,17 +31,39 @@ public class TopicController {
     private CourseRepository courseRepository;
 
     @GetMapping
-    public List<TopicDTOOutGetAll> getAll(String courseName) {
+    @Cacheable(value = "getAllTopics")
+    public Page<TopicDTOOutGetAll> getAll(@RequestParam(required = false) String courseName,
+                                          @PageableDefault(sort = "id", direction = Sort.Direction.DESC, page = 0, size = 10) Pageable pageable) {
         if (courseName == null) {
-            return TopicDTOOutGetAll.getTopicDTOOut(topicRepository.findAll());
+            Page<Topic> topics = topicRepository.findAll(pageable);
+            return TopicDTOOutGetAll.getTopicDTOOut(topics);
         } else {
-            return TopicDTOOutGetAll.getTopicDTOOut(topicRepository.findByCourseName(courseName));
+            Page<Topic> topics = topicRepository.findByCourseName(courseName, pageable);
+            return TopicDTOOutGetAll.getTopicDTOOut(topics);
+        }
+    }
+
+    @GetMapping(value = "/paginationOld")
+    public Page<TopicDTOOutGetAll> getAllOld(@RequestParam(required = false) String courseName,
+                                             @RequestParam int page,
+                                             @RequestParam int size,
+                                             @RequestParam String sort) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, sort);
+
+        if (courseName == null) {
+            Page<Topic> topics = topicRepository.findAll(pageable);
+            return TopicDTOOutGetAll.getTopicDTOOut(topics);
+        } else {
+            Page<Topic> topics = topicRepository.findByCourseName(courseName, pageable);
+            return TopicDTOOutGetAll.getTopicDTOOut(topics);
         }
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<TopicDTOOutAdd> add(@RequestBody @Valid TopicDTOInAdd topicIn, UriComponentsBuilder uriComponentsBuilder) {
+    @CacheEvict(value = "getAllTopics", allEntries = true)
+    public ResponseEntity<TopicDTOOutAdd> add(@RequestBody @Valid TopicDTOInAdd topicIn,
+                                              UriComponentsBuilder uriComponentsBuilder) {
         Topic topic = topicIn.getTopic(courseRepository);
         topicRepository.save(topic);
 
@@ -54,7 +82,9 @@ public class TopicController {
 
     @PutMapping(value = "/{id}")
     @Transactional
-    public ResponseEntity<TopicDTOOutUpdate> update(@PathVariable(value = "id") Long id, @RequestBody @Valid TopicDTOInUpdate topicIn) {
+    @CacheEvict(value = "getAllTopics", allEntries = true)
+    public ResponseEntity<TopicDTOOutUpdate> update(@PathVariable(value = "id") Long id,
+                                                    @RequestBody @Valid TopicDTOInUpdate topicIn) {
         Optional<Topic> topicOptional = topicRepository.findById(id);
         if (topicOptional.isPresent()) {
             Topic topic = topicIn.update(id, topicRepository);
@@ -65,6 +95,7 @@ public class TopicController {
 
     @DeleteMapping(value = "/{id}")
     @Transactional
+    @CacheEvict(value = "getAllTopics", allEntries = true)
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         Optional<Topic> topicOptional = topicRepository.findById(id);
         if (topicOptional.isPresent()) {

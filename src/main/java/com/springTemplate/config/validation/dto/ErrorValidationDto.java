@@ -1,4 +1,4 @@
-package com.springTemplate.validation.dto;
+package com.springTemplate.config.validation.dto;
 
 public class ErrorValidationDto {
 
