@@ -13,4 +13,4 @@ This project is using:
   - Actuator
 - H2 memory database
 - Swagger (http://localhost:8080/swagger-ui.html)
-- Spring Boot Admin (http://localhost:8081/#/applications springTemplateActuator Project)
+- Spring Boot Admin Client (http://localhost:8081/#/applications springTemplateActuator Project)
