@@ -33,8 +33,4 @@ public class LoginDTOInAuthenticate {
         this.password = password;
     }
 
-    public UsernamePasswordAuthenticationToken getUsernamePasswordAuthenticationToken() {
-        return new UsernamePasswordAuthenticationToken(email, password);
-    }
-
 }

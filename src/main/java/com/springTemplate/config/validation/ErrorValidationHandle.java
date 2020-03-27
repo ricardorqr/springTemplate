@@ -24,14 +24,12 @@ public class ErrorValidationHandle {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public List<ErrorValidationDto> handle(MethodArgumentNotValidException exception) {
         List<ErrorValidationDto> list = new ArrayList<>();
-
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         fieldErrors.forEach(e -> {
             String message = messageSource.getMessage(e, LocaleContextHolder.getLocale());
             ErrorValidationDto errorValidationDto = new ErrorValidationDto(e.getField(), message);
             list.add(errorValidationDto);
         });
-
         return list;
     }
 

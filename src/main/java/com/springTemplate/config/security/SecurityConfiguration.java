@@ -26,6 +26,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepository;
 
+    /*
+    Method to inject the AuthenticationManager. Because for any reason the Spring Boot cannot inject
+    the class AuthenticationManager into a variable through the annotation @Autowired.
+     */
     @Override
     @Bean
     protected AuthenticationManager authenticationManager() throws Exception {
@@ -40,9 +44,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception { // Authorization configuration
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/topic").permitAll()
-                .antMatchers(HttpMethod.GET, "/topic/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/").permitAll()
+                .antMatchers(HttpMethod.GET, "/topics").permitAll()
+                .antMatchers(HttpMethod.GET, "/topics/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -51,7 +57,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception { // Static resources configuration (CSS, JS Images, etc)
-
+        web.ignoring()
+                .antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**", "/swagger-resources/**");
     }
 
     public static void main(String[] args) {

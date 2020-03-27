@@ -17,23 +17,22 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/auth")
 public class AuthenticationController {
 
     @Autowired
-    AuthenticationManager authenticationManager;
-
+    private AuthenticationManager authenticationManager;
     @Autowired
     private TokenService tokenService;
 
-    @PostMapping
+    @PostMapping(value = "/auth")
     public ResponseEntity<LoginDTOOutAuthenticate> authenticate(@RequestBody @Valid LoginDTOInAuthenticate login) {
         try {
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = login.getUsernamePasswordAuthenticationToken();
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             String token = tokenService.newToken(authentication);
             return ResponseEntity.ok(new LoginDTOOutAuthenticate(token, "Bearer"));
-        }catch (AuthenticationException e) {
+        } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().build();
         }
     }

@@ -10,4 +10,7 @@ This project is using:
   - Cache
   - JSON JWT Web Token
   - Security
+  - Actuator
 - H2 memory database
+- Swagger (http://localhost:8080/swagger-ui.html)
+- Spring Boot Admin (http://localhost:8081/#/applications springTemplateActuator Project)
