@@ -1,6 +1,5 @@
 package com.springTemplate.model;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
@@ -72,9 +71,7 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<Role> getAuthorities() {
-        return this.roles;
-    }
+    public Collection<Role> getAuthorities() { return this.roles;}
 
     public String getPassword() {
         return password;

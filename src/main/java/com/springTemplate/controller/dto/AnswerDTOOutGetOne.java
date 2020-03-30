@@ -1,14 +1,8 @@
 package com.springTemplate.controller.dto;
 
 import com.springTemplate.model.Answer;
-import com.springTemplate.model.Topic;
-import sun.util.resources.LocaleData;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 public class AnswerDTOOutGetOne {
 
@@ -52,8 +46,6 @@ public class AnswerDTOOutGetOne {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
-    }
+    public void setDate(LocalDateTime date) { this.date = date; }
 
 }

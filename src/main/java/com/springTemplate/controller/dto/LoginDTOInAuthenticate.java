@@ -1,7 +1,6 @@
 package com.springTemplate.controller.dto;
 
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
